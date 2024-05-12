@@ -1,5 +1,6 @@
+import { useTheme } from '@emotion/react'
 import MenuIcon from '@mui/icons-material/Menu'
-import { PaletteMode } from '@mui/material'
+import { Divider, PaletteMode } from '@mui/material'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -9,10 +10,13 @@ import MenuItem from '@mui/material/MenuItem'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { ToggleColorMode } from '..'
 import logo from '../../assets/img/logo.png'
 import logoLight from '../../assets/img/logo_light.png'
-import { useTheme } from '@emotion/react'
+import { auth } from '../../config'
+import { onAuthStateChanged, signOut, User } from 'firebase/auth'
+import LogoutIcon from '@mui/icons-material/Logout'
 
 const logoStyle = {
   width: '140px',
@@ -27,23 +31,30 @@ interface AppAppBarProps {
 
 export function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
   const [open, setOpen] = React.useState(false)
+  const [user, setUser] = React.useState<User | null>(null)
   const theme = useTheme() as { palette: { mode: 'light' | 'dark' } }
+
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user)
+      } else {
+        setUser(null)
+      }
+    })
+
+    return () => unsubscribe()
+  }, [])
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen)
   }
 
-  const scrollToSection = (sectionId: string) => {
-    const sectionElement = document.getElementById(sectionId)
-    const offset = 128
-    if (sectionElement) {
-      const targetScroll = sectionElement.offsetTop - offset
-      sectionElement.scrollIntoView({ behavior: 'smooth' })
-      window.scrollTo({
-        top: targetScroll,
-        behavior: 'smooth',
-      })
-      setOpen(false)
+  const signOutUser = async () => {
+    try {
+      await signOut(auth)
+    } catch (error) {
+      console.error('Error when logging out', error)
     }
   }
 
@@ -101,43 +112,12 @@ export function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
               )}
               <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                 <MenuItem
-                  onClick={() => scrollToSection('features')}
+                  component={Link}
+                  to='/tso-page'
                   sx={{ py: '6px', px: '12px' }}
                 >
                   <Typography variant='body2' color='text.primary'>
-                    Features
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('testimonials')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant='body2' color='text.primary'>
-                    Testimonials
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('highlights')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant='body2' color='text.primary'>
-                    Highlights
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('pricing')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant='body2' color='text.primary'>
-                    Pricing
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('faq')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant='body2' color='text.primary'>
-                    FAQ
+                    Inicio
                   </Typography>
                 </MenuItem>
               </Box>
@@ -149,8 +129,45 @@ export function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                 alignItems: 'center',
               }}
             >
-              <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
+              {!user ? (
+                <>
+                  <Button
+                    color='primary'
+                    variant='contained'
+                    size='small'
+                    component={Link}
+                    to='signin'
+                  >
+                    Login
+                  </Button>
+                </>
+              ) : (
+                <Typography variant='body2' color='secondary.dark'>
+                  Hola, {user.email?.split('@')[0]}
+                </Typography>
+              )}
+              {!!user && (
+                <Button
+                  color='primary'
+                  size='small'
+                  variant='text'
+                  onClick={signOutUser}
+                >
+                  Salir
+                  <LogoutIcon sx={{ fontSize: 18, ml: 0.5 }} />
+                </Button>
+              )}
             </Box>
+
+            <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
+
+            <Box
+              sx={{
+                display: { xs: 'none', md: 'flex' },
+                gap: 0.5,
+                alignItems: 'center',
+              }}
+            ></Box>
             <Box sx={{ display: { sm: '', md: 'none' } }}>
               <Button
                 variant='text'
@@ -173,8 +190,9 @@ export function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                   <Box
                     sx={{
                       display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'end',
+                      flexDirection: 'row-reverse',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
                       flexGrow: 1,
                     }}
                   >
@@ -182,22 +200,56 @@ export function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                       mode={mode}
                       toggleColorMode={toggleColorMode}
                     />
+                    {!!user && (
+                      <Typography
+                        variant='body2'
+                        sx={(theme) => ({
+                          color:
+                            theme.palette.mode === 'light' ? '#000' : '#FFF',
+                        })}
+                      >
+                        {user.email?.split('@')[0]}
+                      </Typography>
+                    )}
                   </Box>
-                  <MenuItem onClick={() => scrollToSection('features')}>
-                    Features
+                  <MenuItem
+                    component={Link}
+                    to='/tso-page'
+                    onClick={() => {
+                      setOpen(false)
+                    }}
+                  >
+                    Inicio
                   </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('testimonials')}>
-                    Testimonials
-                  </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('highlights')}>
-                    Highlights
-                  </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('pricing')}>
-                    Pricing
-                  </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('faq')}>
-                    FAQ
-                  </MenuItem>
+                  <Divider />
+                  {user ? (
+                    <MenuItem>
+                      <Button
+                        color='primary'
+                        variant='outlined'
+                        sx={{ width: '100%' }}
+                        onClick={signOutUser}
+                      >
+                        Salir
+                        <LogoutIcon sx={{ fontSize: 18, ml: 0.5 }} />
+                      </Button>
+                    </MenuItem>
+                  ) : (
+                    <MenuItem>
+                      <Button
+                        color='primary'
+                        variant='contained'
+                        component={Link}
+                        to='signin'
+                        sx={{ width: '100%' }}
+                        onClick={() => {
+                          setOpen(false)
+                        }}
+                      >
+                        Login
+                      </Button>
+                    </MenuItem>
+                  )}
                 </Box>
               </Drawer>
             </Box>

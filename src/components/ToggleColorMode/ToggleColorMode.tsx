@@ -14,7 +14,7 @@ export function ToggleColorMode({
   toggleColorMode,
 }: ToggleColorModeProps) {
   return (
-    <Box sx={{ maxWidth: '32px' }}>
+    <Box sx={{ maxWidth: '32px', ml: 1, mr: 1 }}>
       <Button
         variant='text'
         onClick={toggleColorMode}

@@ -582,11 +582,7 @@ export function getLPTheme(mode: PaletteMode): ThemeOptions {
               },
             },
             '& .MuiOutlinedInput-root': {
-              boxSizing: 'border-box',
-              minWidth: 280,
-              minHeight: 40,
-              height: '100%',
-              borderRadius: '10px',
+              minHeight: 50,
               border: '1px solid',
               borderColor: gray[200],
               transition: 'border-color 120ms ease-in',
@@ -606,11 +602,7 @@ export function getLPTheme(mode: PaletteMode): ThemeOptions {
             },
             ...(theme.palette.mode === 'dark' && {
               '& .MuiOutlinedInput-root': {
-                boxSizing: 'border-box',
-                minWidth: 280,
-                minHeight: 40,
-                height: '100%',
-                borderRadius: '10px',
+                minHeight: 50,
                 border: '1px solid',
                 borderColor: gray[600],
                 transition: 'border-color 120ms ease-in',
