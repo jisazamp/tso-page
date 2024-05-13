@@ -5,14 +5,26 @@ import * as React from 'react'
 import { Outlet } from 'react-router-dom'
 import { AppAppBar } from './components'
 import { getLPTheme } from './getLPTheme'
+import { useNavigate } from 'react-router-dom'
+import { auth } from './config'
+import { onAuthStateChanged } from 'firebase/auth'
 
 export function Layout() {
   const [mode, setMode] = React.useState<PaletteMode>('light')
+  const navigate = useNavigate()
   const LPtheme = createTheme(getLPTheme(mode))
 
   const toggleColorMode = React.useCallback(() => {
     setMode((prev) => (prev === 'dark' ? 'light' : 'dark'))
   }, [])
+
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) navigate('/tso-page/signin')
+    })
+
+    return () => unsubscribe()
+  }, [navigate])
 
   return (
     <ThemeProvider theme={LPtheme}>

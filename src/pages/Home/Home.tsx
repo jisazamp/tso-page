@@ -1,24 +1,21 @@
 import { Box, Divider } from '@mui/material'
 import {
   FAQ,
-  Features,
   Footer,
-  Hero,
   Highlights,
   LogoCollection,
   Pricing,
-  Testimonials,
 } from '../../components'
 
 export const Home = () => {
   return (
     <>
-      <Hero />
-      <Box sx={{ bgcolor: 'background.default' }}>
+      {/* <Hero /> */}
+      <Box sx={{ bgcolor: 'background.default', marginTop: 10 }}>
         <LogoCollection />
-        <Features />
+        {/* <Features /> */}
         <Divider />
-        <Testimonials />
+        {/* <Testimonials /> */}
         <Divider />
         <Highlights />
         <Divider />

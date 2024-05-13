@@ -17,6 +17,7 @@ import logoLight from '../../assets/img/logo_light.png'
 import { auth } from '../../config'
 import { onAuthStateChanged, signOut, User } from 'firebase/auth'
 import LogoutIcon from '@mui/icons-material/Logout'
+import PersonIcon from '@mui/icons-material/Person'
 
 const logoStyle = {
   width: '140px',
@@ -110,17 +111,30 @@ export function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
               ) : (
                 <img src={logo} style={logoStyle} alt='logo of juan isaza' />
               )}
-              <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                <MenuItem
-                  component={Link}
-                  to='/tso-page'
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant='body2' color='text.primary'>
-                    Inicio
-                  </Typography>
-                </MenuItem>
-              </Box>
+
+              {user && (
+                <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                  <MenuItem
+                    component={Link}
+                    to='/tso-page'
+                    sx={{ py: '6px', px: '12px' }}
+                  >
+                    <Typography variant='body2' color='text.primary'>
+                      Inicio
+                    </Typography>
+                  </MenuItem>
+
+                  <MenuItem
+                    component={Link}
+                    to='/tso-page'
+                    sx={{ py: '6px', px: '12px' }}
+                  >
+                    <Typography variant='body2' color='text.primary'>
+                      Curso
+                    </Typography>
+                  </MenuItem>
+                </Box>
+              )}
             </Box>
             <Box
               sx={{
@@ -129,6 +143,8 @@ export function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                 alignItems: 'center',
               }}
             >
+              <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
+
               {!user ? (
                 <>
                   <Button
@@ -137,13 +153,33 @@ export function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                     size='small'
                     component={Link}
                     to='signin'
+                    sx={{
+                      transition: 'transform 0.2s',
+                      '&:hover': { transform: 'scale(1.1)' },
+                      '&:active': { transform: 'scale(0.9)' },
+                    }}
                   >
                     Login
                   </Button>
                 </>
               ) : (
-                <Typography variant='body2' color='secondary.dark'>
-                  Hola, {user.email?.split('@')[0]}
+                <Typography
+                  variant='body2'
+                  sx={(theme) => ({
+                    color: theme.palette.mode === 'light' ? '#000' : '#FFF',
+                    backgroundColor: theme.palette.primary.light,
+                    padding: 1,
+                    fontWeight: 600,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 1,
+                    borderRadius: 1,
+                    margin: '0 10px',
+                  })}
+                >
+                  <PersonIcon />
+                  {user.email?.split('@')[0]}
                 </Typography>
               )}
               {!!user && (
@@ -158,8 +194,6 @@ export function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                 </Button>
               )}
             </Box>
-
-            <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
 
             <Box
               sx={{
@@ -206,12 +240,23 @@ export function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                         sx={(theme) => ({
                           color:
                             theme.palette.mode === 'light' ? '#000' : '#FFF',
+                          backgroundColor: theme.palette.primary.light,
+                          padding: 1,
+                          fontWeight: 600,
+                          display: 'flex',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 1,
                         })}
                       >
+                        <PersonIcon />
                         {user.email?.split('@')[0]}
                       </Typography>
                     )}
                   </Box>
+
+                  <Divider sx={{ margin: '16px 0' }} />
+
                   <MenuItem
                     component={Link}
                     to='/tso-page'
@@ -221,7 +266,9 @@ export function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                   >
                     Inicio
                   </MenuItem>
+
                   <Divider />
+
                   {user ? (
                     <MenuItem>
                       <Button

@@ -1,23 +1,30 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Checkbox from '@mui/material/Checkbox'
 import Container from '@mui/material/Container'
 import CssBaseline from '@mui/material/CssBaseline'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Grid from '@mui/material/Grid'
-import Link from '@mui/material/Link'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth'
 import * as React from 'react'
+import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '../../config'
+import { SignInFormData, SignInUserSchema } from '../../types'
 
 export function SignIn() {
   const [isLoading, setIsLoading] = React.useState(false)
   const navigate = useNavigate()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignInFormData>({
+    resolver: zodResolver(SignInUserSchema),
+  })
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -29,14 +36,10 @@ export function SignIn() {
     return () => unsubscribe()
   }, [navigate])
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const onSubmit = async (data: SignInFormData) => {
     setIsLoading(true)
-    const data = new FormData(event.currentTarget)
-    const email = data.get('email') + ''
-    const password = data.get('password') + ''
 
-    signInWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPassword(auth, data.username, data.password)
       .catch((error) => {
         const errorCode = error.code
         const errorMessage = error.message
@@ -71,34 +74,51 @@ export function SignIn() {
         <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
           <LockOutlinedIcon />
         </Avatar>
+
         <Typography component='h1' variant='h5'>
           Inicio de sesión
         </Typography>
-        <Box component='form' onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+
+        <Box
+          component='form'
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
+            {...register('username')}
             margin='normal'
             required
             fullWidth
-            id='email'
+            id='username'
             label='Correo Institucional'
-            name='email'
-            autoComplete='email'
+            helperText={errors.username?.message}
+            name='username'
+            autoComplete='username'
+            type='email'
             autoFocus
+            error={!!errors.username}
           />
+
           <TextField
+            {...register('password')}
             margin='normal'
             required
             fullWidth
             name='password'
             label='Contraseña'
+            helperText={errors.password?.message}
             type='password'
             id='password'
             autoComplete='current-password'
+            error={!!errors.password}
           />
-          <FormControlLabel
+
+          {/* <FormControlLabel
             control={<Checkbox value='remember' color='primary' />}
             label='Recuérdame'
-          />
+          /> */}
+
           <Button
             type='submit'
             disabled={isLoading}
@@ -107,6 +127,9 @@ export function SignIn() {
             sx={(theme) => ({
               mt: 3,
               mb: 2,
+              transition: 'transform 0.2s',
+              '&:hover': { transform: 'scale(1.01)' },
+              '&:active': { transform: 'scale(0.98)' },
               backgroundColor: isLoading
                 ? '#d4d4d4'
                 : theme.palette.primary.dark,
@@ -114,13 +137,14 @@ export function SignIn() {
           >
             {isLoading ? 'Iniciando...' : 'Iniciar sesión'}
           </Button>
-          <Grid container>
+
+          {/* <Grid container>
             <Grid item xs>
               <Link href='#' variant='body2'>
                 ¿Olvidaste tu contraseña?
               </Link>
             </Grid>
-          </Grid>
+          </Grid> */}
         </Box>
       </Box>
     </Container>

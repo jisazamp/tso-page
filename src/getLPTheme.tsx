@@ -189,11 +189,11 @@ const getDesignTokens = (mode: PaletteMode) => ({
     },
     body1: {
       fontWeight: 400,
-      fontSize: 15,
+      fontSize: 18,
     },
     body2: {
       fontWeight: 400,
-      fontSize: 14,
+      fontSize: 16,
     },
     caption: {
       fontWeight: 400,
@@ -583,7 +583,6 @@ export function getLPTheme(mode: PaletteMode): ThemeOptions {
             },
             '& .MuiOutlinedInput-root': {
               minHeight: 50,
-              border: '1px solid',
               borderColor: gray[200],
               transition: 'border-color 120ms ease-in',
               '& fieldset': {
@@ -596,14 +595,12 @@ export function getLPTheme(mode: PaletteMode): ThemeOptions {
               },
               '&.Mui-focused': {
                 borderColor: brand[400],
-                outline: '4px solid',
                 outlineColor: brand[200],
               },
             },
             ...(theme.palette.mode === 'dark' && {
               '& .MuiOutlinedInput-root': {
                 minHeight: 50,
-                border: '1px solid',
                 borderColor: gray[600],
                 transition: 'border-color 120ms ease-in',
                 '& fieldset': {
@@ -616,7 +613,6 @@ export function getLPTheme(mode: PaletteMode): ThemeOptions {
                 },
                 '&.Mui-focused': {
                   borderColor: brand[400],
-                  outline: '4px solid',
                   outlineColor: alpha(brand[500], 0.5),
                 },
               },
