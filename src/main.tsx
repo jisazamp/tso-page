@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { Layout } from './App.tsx'
 import { Home, Register, SignIn } from './pages/index.ts'
+import '@fontsource/roboto/300.css'
+import '@fontsource/roboto/400.css'
+import '@fontsource/roboto/500.css'
+import '@fontsource/roboto/700.css'
 
 const router = createBrowserRouter([
   {

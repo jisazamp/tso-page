@@ -1,13 +1,12 @@
 import { PaletteMode } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
-import * as React from 'react'
-import { Outlet } from 'react-router-dom'
-import { AppAppBar } from './components'
-import { getLPTheme } from './getLPTheme'
-import { useNavigate } from 'react-router-dom'
-import { auth } from './config'
 import { onAuthStateChanged } from 'firebase/auth'
+import * as React from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { AppAppBar } from './components'
+import { auth } from './config'
+import { getLPTheme } from './getLPTheme'
 
 export function Layout() {
   const [mode, setMode] = React.useState<PaletteMode>('light')
@@ -20,7 +19,9 @@ export function Layout() {
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) navigate('/tso-page/signin')
+      if (!user) {
+        navigate('/tso-page/signin')
+      }
     })
 
     return () => unsubscribe()

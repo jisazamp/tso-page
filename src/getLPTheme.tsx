@@ -153,7 +153,7 @@ const getDesignTokens = (mode: PaletteMode) => ({
     },
   },
   typography: {
-    fontFamily: ['"Inter", "sans-serif"'].join(','),
+    fontFamily: ['"Roboto", "sans-serif"'].join(','),
     h1: {
       fontSize: 60,
       fontWeight: 600,
@@ -306,7 +306,7 @@ export function getLPTheme(mode: PaletteMode): ThemeOptions {
           root: ({ theme, ownerState }) => ({
             boxSizing: 'border-box',
             boxShadow: 'none',
-            borderRadius: '10px',
+            borderRadius: '8px',
             textTransform: 'none',
             '&:active': {
               transform: 'scale(0.98)',
@@ -321,9 +321,6 @@ export function getLPTheme(mode: PaletteMode): ThemeOptions {
               ownerState.color === 'primary' && {
                 color: brand[50],
                 background: brand[500],
-                backgroundImage: `linear-gradient(to bottom, ${brand[400]}, ${brand[600]})`,
-                boxShadow: `inset 0 1px ${alpha(brand[300], 0.4)}`,
-                outline: `1px solid ${brand[700]}`,
                 '&:hover': {
                   background: brand[400],
                   backgroundImage: 'none',
